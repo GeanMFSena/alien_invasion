@@ -13,3 +13,5 @@ class Settings:
         self.bg_color = (230,230,230)
         self.bg_color_blue_sky = (0,169,251)
         
+        # define a velocidade da espaconave 
+        self.ship_speed = 1.5
