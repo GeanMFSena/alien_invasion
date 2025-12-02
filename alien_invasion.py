@@ -15,6 +15,7 @@ class AlienInvasion:
         pygame.display.set_caption('Alien Invasion')
         self.ship = Ship(self)
         
+        
     def run_game(self):
         '''Inicializa o loop principal do jogo'''
         while True:
