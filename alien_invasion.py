@@ -2,6 +2,7 @@ import sys
 import pygame
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 
 class AlienInvasion:
     '''Classe geral para gerenciar ativos e comportamento do jogo'''
@@ -16,6 +17,7 @@ class AlienInvasion:
         self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption('Alien Invasion')
         self.ship = Ship(self)
+        self.bullet = pygame.sprite.Group()
         
         
     def run_game(self):
@@ -23,6 +25,7 @@ class AlienInvasion:
         while True:
             self._chec_events()
             self.ship.update()
+            self.bullet.update()
             self._update_screen()
             self.clock.tick(60)
             
@@ -36,8 +39,7 @@ class AlienInvasion:
                 self._chec_events_keydown(event)
             elif event.type == pygame.KEYUP:
                 self._chec_events_keyup(event)
-                
-
+    
     def _chec_events_keydown(self,event):  
         '''Responde as teclas pressionadas'''
         if event.key == pygame.K_RIGHT:
@@ -48,7 +50,14 @@ class AlienInvasion:
             self.ship.moving_left = True
         elif event.key == pygame.K_q:
             sys.exit()
+        elif event.key == pygame.K_SPACE:
+            self.fire_bullets()
 
+    def fire_bullets(self):
+        '''cria um novo projetil e o adiciona ao grupo projeteis '''
+        new_bullet = Bullet(self)
+        self.bullet.add(new_bullet)
+        
                                           
     def _chec_events_keyup(self, event):
                     '''Responde as teclas soltas'''
@@ -60,7 +69,9 @@ class AlienInvasion:
                     
     def _update_screen(self):
         # redesenha a tela durante cada passagem pelo loop
-        self.screen.fill(self.settings.bg_color_blue_sky)  
+        self.screen.fill(self.settings.bg_color)  
+        for bullet in self.bullet.sprites():
+            bullet.draw_bullet()
         self.ship.blitme() 
         
         # Deixa a tela desenhada mais recente visivel
