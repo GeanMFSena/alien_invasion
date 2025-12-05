@@ -25,7 +25,7 @@ class AlienInvasion:
         while True:
             self._chec_events()
             self.ship.update()
-            self.bullet.update()
+            self._update_bullets()
             self._update_screen()
             self.clock.tick(60)
             
@@ -55,9 +55,16 @@ class AlienInvasion:
 
     def fire_bullets(self):
         '''cria um novo projetil e o adiciona ao grupo projeteis '''
-        new_bullet = Bullet(self)
-        self.bullet.add(new_bullet)
-        
+        if len(self.bullet) <= self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullet.add(new_bullet)
+    
+    def _update_bullets(self):
+        self.bullet.update()
+        # descarta os projeteis que desapareceram
+        for bullet in self.bullet.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullet.remove(bullet)        
                                           
     def _chec_events_keyup(self, event):
                     '''Responde as teclas soltas'''
