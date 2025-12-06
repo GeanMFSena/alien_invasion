@@ -14,14 +14,14 @@ class Alien(Sprite):
         
         
         # pega a imagem e o rect dela
-        self.image = pygame.image.load('alien.bmp')
+        self.image = pygame.image.load('images/alien.bmp')
         self.rect = self.image.get_rect()
         
         # self.rect.topleft = self.screen_rect.topleft 
         
         # adiciona o alien na parte superior da tela um pouco afastado 
-        self.rect.x = self.screen.width
-        self.rect.y = self.screen.height
+        self.rect.x = self.rect.width
+        self.rect.y = self.rect.height
         
         # armazena a posicao horizontal do alien 
         self.x = float(self.rect.x)

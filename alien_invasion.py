@@ -3,6 +3,7 @@ import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from alien import Alien
 
 class AlienInvasion:
     '''Classe geral para gerenciar ativos e comportamento do jogo'''
@@ -18,6 +19,8 @@ class AlienInvasion:
         pygame.display.set_caption('Alien Invasion')
         self.ship = Ship(self)
         self.bullet = pygame.sprite.Group()
+        self.aliens = pygame.sprite.Group()
+        self._create_fleet()
         
         
     def run_game(self):
@@ -72,7 +75,23 @@ class AlienInvasion:
                         self.ship.moving_right = False
                     elif event.key == pygame.K_LEFT:
                         self.ship.moving_left = False
-                       
+    def _create_fleet(self):
+        '''Cria a frota de alienigenas '''
+        # cria um alienigena e continua adicionando alienigenas 
+        # o distanciamento entre os alienigenas e a largura dos mesmos
+        alien = Alien(self)
+        self.aliens.add(alien)
+        alien_width = alien.rect.width
+        
+        current_x = alien_width
+        
+        while current_x < (self.settings.screen_width - 2 * alien_width):
+            new_alien = Alien(self)
+            new_alien.x = current_x
+            new_alien.rect.x = current_x
+            self.aliens.add(new_alien)
+            current_x += 2 * alien_width
+        
                     
     def _update_screen(self):
         # redesenha a tela durante cada passagem pelo loop
@@ -80,7 +99,7 @@ class AlienInvasion:
         for bullet in self.bullet.sprites():
             bullet.draw_bullet()
         self.ship.blitme() 
-        
+        self.aliens.draw(self.screen)
         # Deixa a tela desenhada mais recente visivel
         pygame.display.flip()
 
