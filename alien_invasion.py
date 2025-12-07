@@ -4,6 +4,8 @@ from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+import random as rd
+from stars import Stars
 
 class AlienInvasion:
     '''Classe geral para gerenciar ativos e comportamento do jogo'''
@@ -13,13 +15,16 @@ class AlienInvasion:
         pygame.init()
         self.clock = pygame.time.Clock()
         self.settings = Settings()
-        self.screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
-        self.settings.screen_width = self.screen.get_rect().width
-        self.settings.screen_height = self.screen.get_rect().height
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+        # self.screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+        # self.settings.screen_width = self.screen.get_rect().width
+        # self.settings.screen_height = self.screen.get_rect().height
         pygame.display.set_caption('Alien Invasion')
         self.ship = Ship(self)
         self.bullet = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
+        self.stars = pygame.sprite.Group()
+        # self.creat_fleet_stars()    
         self._create_fleet()
         
         
@@ -75,23 +80,54 @@ class AlienInvasion:
                         self.ship.moving_right = False
                     elif event.key == pygame.K_LEFT:
                         self.ship.moving_left = False
+                        
     def _create_fleet(self):
+        alien = Alien(self)
+        alien_width,alien_height = alien.rect.size
+        
+        current_x, current_y = alien_width, alien_height
+        
+        while current_y < (self.settings.screen_height - 3 * alien_height):
+            while current_x < (self.settings.screen_width - 2 * alien_width):
+                self._create_alien(current_x,current_y)
+                current_x += 2 * alien_width
+            
+            current_x = alien_width
+            current_y += 2 * alien_height
+        
+                
+    
+    def _create_alien(self,x_position,y_position):
         '''Cria a frota de alienigenas '''
         # cria um alienigena e continua adicionando alienigenas 
-        # o distanciamento entre os alienigenas e a largura dos mesmos
-        alien = Alien(self)
-        self.aliens.add(alien)
-        alien_width = alien.rect.width
+        # o distanciamento entre os alienigenas e a largura dos mesmos        
+        new_alien = Alien(self)
+        new_alien.x = x_position
+        new_alien.rect.x = x_position
+        new_alien.rect.y = y_position
+        self.aliens.add(new_alien)
         
-        current_x = alien_width
+    # def creat_fleet_stars(self):
+    #     star = Stars(self)
+    #     star_width, star_height = star.rect.size
         
-        while current_x < (self.settings.screen_width - 2 * alien_width):
-            new_alien = Alien(self)
-            new_alien.x = current_x
-            new_alien.rect.x = current_x
-            self.aliens.add(new_alien)
-            current_x += 2 * alien_width
+    #     star_current_x, star_current_y = star_width, star_height
         
+    #     while star_current_y < (self.settings.screen_height - 3 * star_height):
+    #         while star_current_x < (self.settings.screen_width - 2 * star_width):
+    #             self._create_star(rd.randint(1,1200),rd.randint(1,800))
+    #             star_current_x += 2 * star_width
+            
+    #         star_current_x = star_width
+    #         star_current_y += 2 * star_height
+        
+    # def _create_star(self,x_position,y_position):
+    #     '''Cria as estrelas no fundo'''
+    #     new_star = Stars(self)
+    #     new_star.x = x_position
+    #     new_star.rect.x = x_position
+    #     new_star.rect.y = y_position
+    #     self.stars.add(new_star)
                     
     def _update_screen(self):
         # redesenha a tela durante cada passagem pelo loop
@@ -100,6 +136,7 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.ship.blitme() 
         self.aliens.draw(self.screen)
+        # self.stars.draw(self.screen)
         # Deixa a tela desenhada mais recente visivel
         pygame.display.flip()
 
