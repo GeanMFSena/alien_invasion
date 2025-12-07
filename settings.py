@@ -22,5 +22,10 @@ class Settings:
         self.bullet_color = (60,60,60)
         self.bullets_allowed = 3    
         
+        # define a velocidade do alienigena 
+        self.alien_speed = 1.0
+        self.fleet_drop_speed = 10 
+        # fleet direction de 1 representa a direta e -1 representa a esquerda 
+        self.fleet_direction = 1 
         
         

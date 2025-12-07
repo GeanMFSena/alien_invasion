@@ -1,5 +1,4 @@
 import pygame
-
 from pygame.sprite import Sprite
 
 class Alien(Sprite):
@@ -10,7 +9,7 @@ class Alien(Sprite):
         
         self.screen = ai_game.screen
         self.settings = ai_game.settings 
-        self.screen_rect = ai_game.screen.get_rect() 
+        self.screen_rect = ai_game.screen.get_rect()
         
         
         # pega a imagem e o rect dela
@@ -26,4 +25,12 @@ class Alien(Sprite):
         # armazena a posicao horizontal do alien 
         self.x = float(self.rect.x)
         
+    def update(self):
+        self.x += self.settings.alien_speed * self.settings.fleet_direction
+        self.rect.x = self.x
         
+    def check_edges(self):
+        '''Retorna True se o alienigena estiver na borda da tela '''
+        screen_rect = self.screen.get_rect()
+        return (self.rect.right >= screen_rect.right) or (self.rect.left <= 0)
+    
