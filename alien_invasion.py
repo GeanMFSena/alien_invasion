@@ -73,7 +73,10 @@ class AlienInvasion:
         # descarta os projeteis que desapareceram
         for bullet in self.bullet.copy():
             if bullet.rect.bottom <= 0:
-                self.bullet.remove(bullet)    
+                self.bullet.remove(bullet)
+            # Verifica se um projetil atingiu um alienigena 
+            # Se sim, descarta o projetil e o alienigena
+            collisions = pygame.sprite.groupcollide(self.bullet,self.aliens,True,True)    
     
     def _update_aliens(self):
         self._check_fleet_direction()
@@ -85,18 +88,7 @@ class AlienInvasion:
                         self.ship.moving_right = False
                     elif event.key == pygame.K_LEFT:
                         self.ship.moving_left = False
-                    
-    
-    def _create_alien(self,x_position,y_position):
-        '''Cria a frota de alienigenas '''
-        # cria um alienigena e continua adicionando alienigenas 
-        # o distanciamento entre os alienigenas e a largura dos mesmos        
-        new_alien = Alien(self)
-        new_alien.x = x_position
-        new_alien.rect.x = x_position
-        new_alien.rect.y = y_position
-        self.aliens.add(new_alien)
-        
+                        
     def _create_fleet(self):
         alien = Alien(self)
         alien_width,alien_height = alien.rect.size
@@ -109,7 +101,19 @@ class AlienInvasion:
                 current_x += 2 * alien_width
             
             current_x = alien_width
-            current_y += 2 * alien_height
+            current_y += 2 * alien_height                
+    
+    def _create_alien(self,x_position,y_position):
+        '''Cria a frota de alienigenas '''
+        # cria um alienigena e continua adicionando alienigenas 
+        # o distanciamento entre os alienigenas e a largura dos mesmos        
+        new_alien = Alien(self)
+        new_alien.x = x_position
+        new_alien.rect.x = x_position
+        new_alien.rect.y = y_position
+        self.aliens.add(new_alien)
+        
+
             
     def _check_fleet_direction(self):
         '''Responde se algum alienigena chegou a borda da tela'''

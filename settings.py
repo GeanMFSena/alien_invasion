@@ -29,3 +29,6 @@ class Settings:
         self.fleet_direction = 1 
         
         
+        self.pingos_drop_speed = 10 
+        
+        
