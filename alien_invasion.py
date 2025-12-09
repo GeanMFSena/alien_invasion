@@ -76,7 +76,10 @@ class AlienInvasion:
                 self.bullet.remove(bullet)
             # Verifica se um projetil atingiu um alienigena 
             # Se sim, descarta o projetil e o alienigena
-            collisions = pygame.sprite.groupcollide(self.bullet,self.aliens,True,True)    
+            collisions = pygame.sprite.groupcollide(self.bullet,self.aliens,True,True)   
+            if not self.aliens:
+                self.bullet.empty()
+                self._create_fleet()
     
     def _update_aliens(self):
         self._check_fleet_direction()
