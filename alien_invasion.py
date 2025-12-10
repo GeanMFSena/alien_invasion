@@ -6,6 +6,9 @@ from bullet import Bullet
 from alien import Alien
 import random as rd
 from stars import Stars
+from time import sleep
+from game_stats import GameStats
+
 
 class AlienInvasion:
     '''Classe geral para gerenciar ativos e comportamento do jogo'''
@@ -13,6 +16,7 @@ class AlienInvasion:
     def __init__(self):
         '''Inicializa e cria os arquivos do jogo'''
         pygame.init()
+        self.active_game = True
         self.clock = pygame.time.Clock()
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
@@ -26,11 +30,12 @@ class AlienInvasion:
         self.stars = pygame.sprite.Group()
         # self.creat_fleet_stars()    
         self._create_fleet()
+        self.stats = GameStats(self)
         
         
     def run_game(self):
         '''Inicializa o loop principal do jogo'''
-        while True:
+        while self.active_game:
             self._chec_events()
             self.ship.update()
             self._update_bullets()
@@ -74,16 +79,57 @@ class AlienInvasion:
         for bullet in self.bullet.copy():
             if bullet.rect.bottom <= 0:
                 self.bullet.remove(bullet)
-            # Verifica se um projetil atingiu um alienigena 
-            # Se sim, descarta o projetil e o alienigena
-            collisions = pygame.sprite.groupcollide(self.bullet,self.aliens,True,True)   
-            if not self.aliens:
-                self.bullet.empty()
-                self._create_fleet()
+        self._check_bullet_collision()
+        
+
+                
+    def _check_bullet_collision(self):
+        # Verifica se um projetil atingiu um alienigena 
+        # Se sim, descarta o projetil e o alienigena
+        collisions = pygame.sprite.groupcollide(self.bullet,self.aliens,True,True)   
+        # verifica se tem algum alienigena no grupo de alienigenas 
+        # se for True apaga todos os sprites das balas e cria novos alienigenas 
+        if not self.aliens:
+            self.bullet.empty()
+            self._create_fleet()
     
     def _update_aliens(self):
         self._check_fleet_direction()
         self.aliens.update()   
+        # detecta colisoes entre alienigenas e espaconaves 
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            self.ship_hit()
+        self._check_aliens_bottom()
+        
+        
+    def ship_hit(self):
+        '''Responde a espaconave sendo abatida por um alienigena'''
+        # decrementa ship_left
+        self.stats.ship_left -= 1 
+        
+        # descarta qualquer alienigena e bala restante 
+        self.aliens.empty()
+        self.bullet.empty()
+        
+        # cria uma nova frota de alienigenas e reposiciona a nava no meio denovo 
+        self._create_fleet()
+        self.ship.center_ship()
+        
+        # pausa o jogo 
+        sleep(0.5)
+        
+        if self.stats.ship_left == 0:
+            self.active_game = False
+
+        
+    def _check_aliens_bottom(self):
+        '''Verifica se um alien chegou a borda da tela e se sim reinicia o loop'''
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= self.settings.screen_height:
+                '''Volta o loop como se a nava tivesse sido abatida '''
+                self.ship_hit
+                break
+
                                           
     def _chec_events_keyup(self, event):
                     '''Responde as teclas soltas'''

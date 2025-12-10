@@ -35,6 +35,11 @@ class Ship:
         
         # atualiza o objeto rect de self.x 
         self.rect.x = self.x 
+        
+    def center_ship(self):
+        '''Centraliza a espaconave na tela '''
+        self.rect.midbottom = self.screen_rect.midbottom
+        self.x = float(self.rect.x)
     
     
     
