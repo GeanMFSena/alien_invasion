@@ -8,6 +8,7 @@ import random as rd
 from stars import Stars
 from time import sleep
 from game_stats import GameStats
+from button import Button
 
 
 class AlienInvasion:
@@ -16,7 +17,7 @@ class AlienInvasion:
     def __init__(self):
         '''Inicializa e cria os arquivos do jogo'''
         pygame.init()
-        self.active_game = True
+        self.active_game = False
         self.clock = pygame.time.Clock()
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
@@ -31,17 +32,21 @@ class AlienInvasion:
         # self.creat_fleet_stars()    
         self._create_fleet()
         self.stats = GameStats(self)
+        self.play_button = Button(self, "Play")
         
         
     def run_game(self):
         '''Inicializa o loop principal do jogo'''
-        while self.active_game:
+        while True:
             self._chec_events()
-            self.ship.update()
-            self._update_bullets()
-            self._update_aliens()
+            if self.active_game:
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
             self._update_screen()
             self.clock.tick(60)
+        
+            
             
             
     def _chec_events(self):  
@@ -53,6 +58,26 @@ class AlienInvasion:
                 self._chec_events_keydown(event)
             elif event.type == pygame.KEYUP:
                 self._chec_events_keyup(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
+                
+    def _check_play_button(self, mouse_pos):
+        '''inicia o jogo novo quando o jogador clica em play '''
+        if self.play_button.rect.collidepoint(mouse_pos):
+            #redefine as estatisticas do jogo 
+            self.reset_stats()
+            self.active_game = True
+            
+            # descarta projeteis e alienigenas
+            self.bullet.empty()
+            self.aliens.empty()
+            
+            # cria uma nova frota de aliens e centraliza a espaconave novamente
+            self._create_fleet()
+            self.ship.center_ship()
+            
+            
     
     def _chec_events_keydown(self,event):  
         '''Responde as teclas pressionadas'''
@@ -105,20 +130,17 @@ class AlienInvasion:
     def ship_hit(self):
         '''Responde a espaconave sendo abatida por um alienigena'''
         # decrementa ship_left
-        self.stats.ship_left -= 1 
-        
-        # descarta qualquer alienigena e bala restante 
-        self.aliens.empty()
-        self.bullet.empty()
-        
-        # cria uma nova frota de alienigenas e reposiciona a nava no meio denovo 
-        self._create_fleet()
-        self.ship.center_ship()
-        
-        # pausa o jogo 
-        sleep(0.5)
-        
-        if self.stats.ship_left == 0:
+        if self.stats.ship_left > 0:
+            self.stats.ship_left -= 1 
+            # descarta qualquer alienigena e bala restante 
+            self.aliens.empty()
+            self.bullet.empty()
+            # cria uma nova frota de alienigenas e reposiciona a nava no meio denovo 
+            self._create_fleet()
+            self.ship.center_ship()
+            # pausa o jogo 
+            sleep(0.5)
+        else:
             self.active_game = False
 
         
@@ -209,6 +231,8 @@ class AlienInvasion:
         self.aliens.draw(self.screen)
         # self.stars.draw(self.screen)
         # Deixa a tela desenhada mais recente visivel
+        if self.active_game == False:
+            self.play_button.drawn_button()
         pygame.display.flip()
 
                 

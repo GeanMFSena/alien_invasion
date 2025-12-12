@@ -15,7 +15,7 @@ class Button():
         
         #cria o objeto rect do botao e centraliza
         
-        self.rect = pygame.rect(0,0, self.width, self.height)
+        self.rect = pygame.Rect(0,0, self.width, self.height)
         self.rect.center = self.screen_rect.center
         
         #a mensagem do botao precisa ser preparada apenas uma vez
