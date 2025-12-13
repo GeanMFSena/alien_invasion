@@ -61,12 +61,16 @@ class AlienInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
+            
                 
-    def _check_play_button(self, mouse_pos):
+    def _check_play_button(self,mouse_pos):
         '''inicia o jogo novo quando o jogador clica em play '''
-        if self.play_button.rect.collidepoint(mouse_pos):
+        
+        click_button = self.play_button.rect.collidepoint(mouse_pos)
+        if click_button and not self.active_game :
             #redefine as estatisticas do jogo 
-            self.reset_stats()
+            self.stats.reset_stats()
+            self.settings.initialize_dynamic_settings()
             self.active_game = True
             
             # descarta projeteis e alienigenas
@@ -76,6 +80,9 @@ class AlienInvasion:
             # cria uma nova frota de aliens e centraliza a espaconave novamente
             self._create_fleet()
             self.ship.center_ship()
+            
+            # esconde o cursor do mouse
+            pygame.mouse.set_visible(False)
             
             
     
@@ -91,6 +98,8 @@ class AlienInvasion:
             sys.exit()
         elif event.key == pygame.K_SPACE:
             self.fire_bullets()
+        elif event.key == pygame.K_p:
+            self._check_play_button()
 
     def fire_bullets(self):
         '''cria um novo projetil e o adiciona ao grupo projeteis '''
@@ -117,6 +126,7 @@ class AlienInvasion:
         if not self.aliens:
             self.bullet.empty()
             self._create_fleet()
+            self.settings.incrase_speed()
     
     def _update_aliens(self):
         self._check_fleet_direction()
@@ -142,6 +152,7 @@ class AlienInvasion:
             sleep(0.5)
         else:
             self.active_game = False
+            pygame.mouse.set_visible(True)
 
         
     def _check_aliens_bottom(self):
