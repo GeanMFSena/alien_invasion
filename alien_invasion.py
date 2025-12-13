@@ -9,6 +9,8 @@ from stars import Stars
 from time import sleep
 from game_stats import GameStats
 from button import Button
+from scoreboard import Scoreboard
+
 
 
 class AlienInvasion:
@@ -31,8 +33,12 @@ class AlienInvasion:
         self.stars = pygame.sprite.Group()
         # self.creat_fleet_stars()    
         self._create_fleet()
+        # cria uma instancia que armazena estatisticas do jogo 
         self.stats = GameStats(self)
+        # cria uma instancia que cria um botao de play para o jogo 
         self.play_button = Button(self, "Play")
+        # cria uma instancia que contem a funcao para desenhar na tela as estatisticas do jogo
+        self.scoreboard = Scoreboard(self)
         
         
     def run_game(self):
@@ -83,8 +89,6 @@ class AlienInvasion:
             
             # esconde o cursor do mouse
             pygame.mouse.set_visible(False)
-            
-            
     
     def _chec_events_keydown(self,event):  
         '''Responde as teclas pressionadas'''
@@ -240,6 +244,7 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.ship.blitme() 
         self.aliens.draw(self.screen)
+        self.scoreboard.show_score()
         # self.stars.draw(self.screen)
         # Deixa a tela desenhada mais recente visivel
         if self.active_game == False:
