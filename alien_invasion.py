@@ -76,6 +76,7 @@ class AlienInvasion:
         if click_button and not self.active_game :
             #redefine as estatisticas do jogo 
             self.stats.reset_stats()
+            self.scoreboard._prep_score()
             self.settings.initialize_dynamic_settings()
             self.active_game = True
             
@@ -124,7 +125,11 @@ class AlienInvasion:
     def _check_bullet_collision(self):
         # Verifica se um projetil atingiu um alienigena 
         # Se sim, descarta o projetil e o alienigena
-        collisions = pygame.sprite.groupcollide(self.bullet,self.aliens,True,True)   
+        collisions = pygame.sprite.groupcollide(self.bullet,self.aliens,True,True) 
+        if collisions:
+            for aliens in collisions.values():
+                self.stats.score += self.settings.alien_points * len(aliens)
+                self.scoreboard._prep_score()  
         # verifica se tem algum alienigena no grupo de alienigenas 
         # se for True apaga todos os sprites das balas e cria novos alienigenas 
         if not self.aliens:
