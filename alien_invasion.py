@@ -77,6 +77,8 @@ class AlienInvasion:
             #redefine as estatisticas do jogo 
             self.stats.reset_stats()
             self.scoreboard._prep_score()
+            self.scoreboard._prep_level()
+            self.scoreboard._prep_ships()
             self.settings.initialize_dynamic_settings()
             self.active_game = True
             
@@ -130,12 +132,18 @@ class AlienInvasion:
             for aliens in collisions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
                 self.scoreboard._prep_score()  
+                self.scoreboard.check_high_score()
         # verifica se tem algum alienigena no grupo de alienigenas 
         # se for True apaga todos os sprites das balas e cria novos alienigenas 
         if not self.aliens:
             self.bullet.empty()
             self._create_fleet()
             self.settings.incrase_speed()
+            
+            '''Atualiza o level do jogador '''
+            self.stats.level += 1
+            self.scoreboard._prep_level() 
+            
     
     def _update_aliens(self):
         self._check_fleet_direction()
@@ -159,6 +167,8 @@ class AlienInvasion:
             self.ship.center_ship()
             # pausa o jogo 
             sleep(0.5)
+            # atualiza o numero de vidas quando uma nave é abatida
+            self.scoreboard._prep_ships()
         else:
             self.active_game = False
             pygame.mouse.set_visible(True)

@@ -1,9 +1,11 @@
 '''Classe que cuidara do funcionamento da espaconave'''
 import pygame
+from pygame.sprite import Sprite
 
-class Ship:
+class Ship(Sprite):
     
     def __init__(self, ai_game):
+        super().__init__()
         '''Inicializa a espaconave e define a posicao inicial'''
         
         self.screen = ai_game.screen

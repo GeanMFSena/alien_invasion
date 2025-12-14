@@ -16,7 +16,7 @@ class Settings:
         # aumento de pontos ganhos abatendo alienigenas
         self.score_scale = 1.5
         
-        self.ship_limit = 2
+        self.ship_limit = 3
         
 
         self.bullet_width = 3000
