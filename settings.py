@@ -37,7 +37,7 @@ class Settings:
         self.bullet_speed = 2.5
     
         # define a velocidade do alienigena 
-        self.alien_speed = 1.0
+        self.alien_speed = 1.0 
         # fleet direction de 1 representa a direta e -1 representa a esquerda 
         self.fleet_direction = 1 
         self.alien_points = 50
