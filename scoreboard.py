@@ -23,7 +23,7 @@ class Scoreboard:
         # configuracoes de fonte para informacoes de pontuacao
         self.text_color = (30,30,30)
         self.font = pygame.font.SysFont(None, 48)
-        
+        self.update_json_high_score()
         self._prep_score()
         self._prep_high_score()
         self._prep_level()
@@ -42,6 +42,7 @@ class Scoreboard:
         
     def _prep_high_score(self):
         
+        '''Transforma a pontuacao maxima em uma imagem renderizada '''
         high_score = round(self.stats.high_score, -1)
         high_score_str = f'highest score: {high_score:,}'
         self.high_score_image = self.font.render(high_score_str, True, self.text_color, self.settings.bg_color)
@@ -66,7 +67,8 @@ class Scoreboard:
             self._prep_high_score()
                 
 
-    def update_json_high_score(self):      
+    def update_json_high_score(self):  
+            
         if not self.path.exists():
             content = json.dumps(self.stats.high_score)
             self.path.write_text(content)      

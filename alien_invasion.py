@@ -51,8 +51,6 @@ class AlienInvasion:
                 self._update_aliens()
             self._update_screen()
             self.clock.tick(60)
-        
-            
             
             
     def _chec_events(self):  
@@ -73,7 +71,7 @@ class AlienInvasion:
         '''inicia o jogo novo quando o jogador clica em play '''
         
         click_button = self.play_button.rect.collidepoint(mouse_pos)
-        if click_button and not self.active_game :
+        if click_button and not self.active_game : 
             #redefine as estatisticas do jogo 
             self.stats.reset_stats()
             self.scoreboard._prep_score()
