@@ -24,6 +24,12 @@ class Scoreboard:
         self.text_color = (30,30,30)
         self.font = pygame.font.SysFont(None, 48)
         self.update_json_high_score()
+        
+        # funcao que armazena as funcoes que geram imagens 
+        self.prep_images()
+        
+    def prep_images(self):
+        
         self._prep_score()
         self._prep_high_score()
         self._prep_level()

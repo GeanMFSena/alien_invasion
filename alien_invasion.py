@@ -134,10 +134,12 @@ class AlienInvasion:
         # verifica se tem algum alienigena no grupo de alienigenas 
         # se for True apaga todos os sprites das balas e cria novos alienigenas 
         if not self.aliens:
+            self.start_new_level()
+    
+    def start_new_level(self):
             self.bullet.empty()
             self._create_fleet()
             self.settings.incrase_speed()
-            
             '''Atualiza o level do jogador '''
             self.stats.level += 1
             self.scoreboard._prep_level() 
